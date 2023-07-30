@@ -48,18 +48,3 @@ jobs:
 
       - name: Test
         run: make test
-
-  notification:
-    name: Send Notification To Plumble Channel
-    runs-on: ubuntu-latest
-    needs: [build]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Call Webhook
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"text":"Test webhook"}' \
-            https://api.pumble.com/workspaces/64c648f0f7d4cc2446c41adc/incomingWebhooks/postMessage/64c6491bf7d4cc2446c41aed/yuxDW1eQmwVGV1pPM7K7hXAS
