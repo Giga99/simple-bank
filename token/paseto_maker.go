@@ -21,25 +21,25 @@ func NewPasetoMaker(implicit string) (Maker, error) {
 	return maker, nil
 }
 
-func (maker *PasetoMaker) CreateToken(username string, duration time.Duration) (string, error) {
+func (maker *PasetoMaker) CreateToken(username string, duration time.Duration) (string, *Payload, error) {
 	payload, err := NewPayload(username, duration)
 	if err != nil {
-		return "", err
+		return "", payload, err
 	}
 
 	payloadJson, err := json.Marshal(payload)
 	if err != nil {
-		return "", err
+		return "", payload, err
 	}
-	println(payloadJson)
 
 	token, err := paseto.NewTokenFromClaimsJSON(payloadJson, nil)
 	if err != nil {
-		return "", err
+		return "", payload, err
 	}
-	println(token)
 
-	return token.V4Encrypt(maker.symetricKey, maker.implicit), nil
+	encryptedToken := token.V4Encrypt(maker.symetricKey, maker.implicit)
+
+	return encryptedToken, payload, err
 }
 
 func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
