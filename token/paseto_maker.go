@@ -9,14 +9,14 @@ import (
 )
 
 type PasetoMaker struct {
-	symetricKey paseto.V4SymmetricKey
-	implicit    []byte
+	symmetricKey paseto.V4SymmetricKey
+	implicit     []byte
 }
 
 func NewPasetoMaker(implicit string) (Maker, error) {
 	maker := &PasetoMaker{
-		symetricKey: paseto.NewV4SymmetricKey(),
-		implicit:    []byte(implicit),
+		symmetricKey: paseto.NewV4SymmetricKey(),
+		implicit:     []byte(implicit),
 	}
 	return maker, nil
 }
@@ -37,7 +37,7 @@ func (maker *PasetoMaker) CreateToken(username string, duration time.Duration) (
 		return "", payload, err
 	}
 
-	encryptedToken := token.V4Encrypt(maker.symetricKey, maker.implicit)
+	encryptedToken := token.V4Encrypt(maker.symmetricKey, maker.implicit)
 
 	return encryptedToken, payload, err
 }
@@ -45,7 +45,7 @@ func (maker *PasetoMaker) CreateToken(username string, duration time.Duration) (
 func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
 	parser := paseto.NewParser()
 	parser.AddRule(paseto.NotExpired())
-	parsedToken, err := parser.ParseV4Local(maker.symetricKey, token, maker.implicit)
+	parsedToken, err := parser.ParseV4Local(maker.symmetricKey, token, maker.implicit)
 	if err != nil {
 		if strings.Contains(err.Error(), "expired") {
 			return nil, ErrExpiredToken
